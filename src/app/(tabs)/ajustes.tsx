@@ -72,7 +72,7 @@ export default function Ajustes() {
             <View style={{ flex: 1 }}>
               <T style={{ color: t.onHero, fontWeight: '800' }}>Prueba Premium 7 días gratis</T>
               <T variant="small" style={{ color: t.onHero, opacity: 0.85 }}>
-                Detección automática de pagos e historial completo.
+                Widget, detección de pagos e historial completo.
               </T>
             </View>
           </Card>

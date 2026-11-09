@@ -44,6 +44,27 @@
         {
           "color": "#1A7A62"
         }
+      ],
+      [
+        "expo-widgets",
+        {
+          "widgets": [
+            {
+              "name": "Resumen",
+              "displayName": "Cuadra",
+              "description": "Lo que te queda este mes y tu ahorro",
+              "ios": {
+                "supportedFamilies": [
+                  "systemSmall",
+                  "systemMedium",
+                  "accessoryCircular",
+                  "accessoryRectangular",
+                  "accessoryInline"
+                ]
+              }
+            }
+          ]
+        }
       ]
     ],
     "experiments": {

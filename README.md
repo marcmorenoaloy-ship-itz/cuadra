@@ -16,6 +16,7 @@ Cada vez que pagas o cobras, te llega un aviso para clasificar el movimiento en 
 | Lectura de avisos del banco en Android (módulo nativo Kotlin) | `modules/bank-listener/` |
 | Interpretar el texto del aviso ("Has pagado 23,40 € en LIDL…") | `src/lib/bank-parser.ts` |
 | Recordatorio diario y aviso el día de cobro | `src/lib/notifications.ts` |
+| Widget de iPhone (Premium): pantalla de inicio y de bloqueo | `src/widgets/resumen.tsx`, `src/lib/widget-sync.ts` |
 | Plan de marketing | `docs/marketing.md` |
 | Icono (se regenera con `node scripts/generate-icons.js <carpeta>`) | `assets/images/`, `scripts/generate-icons.js` |
 
@@ -38,7 +39,7 @@ npx expo start
 
 3. Escanea el código QR con la cámara del iPhone (el ordenador y el iPhone en la misma wifi).
 
-En Expo Go se ven todas las pantallas, los recordatorios y los Atajos de Apple Pay. No funcionan las compras
+En Expo Go se ven todas las pantallas (el widget no: necesita la build propia), los recordatorios y los Atajos de Apple Pay. No funcionan las compras
 de Premium; para probar Premium usa «Mi plan» → «Desarrollo» → «Simular Premium».
 
 Para instalar la app de verdad en tu iPhone (con su icono y compras) necesitas la cuenta de

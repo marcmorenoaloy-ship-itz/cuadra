@@ -8,9 +8,10 @@ import { AppState, Platform, useColorScheme } from 'react-native';
 import { BankListener } from '../../modules/bank-listener';
 import { applyDetectionSettings, importCaptured } from '@/lib/detection';
 import { scheduleReminders } from '@/lib/notifications';
-import { initPurchases } from '@/lib/purchases';
+import { initPurchases, usePremium } from '@/lib/purchases';
 import { useStore } from '@/lib/store';
 import { useHydrated } from '@/lib/use-hydrated';
+import { syncWidget } from '@/lib/widget-sync';
 
 SplashScreen.preventAutoHideAsync();
 initPurchases();
@@ -32,6 +33,8 @@ export default function RootLayout() {
   const settings = useStore((s) => s.settings);
   const plan = useStore((s) => s.plan);
   const onboarded = useStore((s) => s.onboarded);
+  const movements = useStore((s) => s.movements);
+  const premium = usePremium();
 
   useEffect(() => {
     if (hydrated) SplashScreen.hideAsync();
@@ -69,6 +72,11 @@ export default function RootLayout() {
       savingsAmount: (plan.income * plan.savingsPct) / 100,
     }).catch(() => {});
   }, [hydrated, onboarded, settings.dailyReminder, settings.reminderHour, settings.paydayReminder, plan.payday, plan.income, plan.savingsPct]);
+
+  // Widget de iPhone: se actualiza cada vez que cambian los movimientos, el plan o Premium.
+  useEffect(() => {
+    if (hydrated && onboarded) syncWidget(premium);
+  }, [hydrated, onboarded, premium, movements, plan]);
 
   if (!hydrated) return null;
 

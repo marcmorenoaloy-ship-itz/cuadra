@@ -8,7 +8,8 @@ import { Button, T, tap } from '@/ui/components';
 import { radius, useTheme } from '@/ui/theme';
 
 const FEATURES = [
-  ['🔔', 'Detección automática', 'Cada pago de tu banco te llega listo para clasificar'],
+  ['📱', 'Widget en tu pantalla', 'Lo que te queda y tu ahorro, sin abrir la app (iPhone)'],
+  ['🔔', 'Detección automática', 'Cada pago te llega listo para clasificar'],
   ['📊', 'Historial completo', 'Compara meses y descubre en qué se te escapa el dinero'],
   ['🎯', 'Más fácil ahorrar', 'Avisos antes de pasarte del límite de cada categoría'],
   ['🔒', 'Tus datos, en tu móvil', 'Sin conectar el banco ni dar contraseñas'],
