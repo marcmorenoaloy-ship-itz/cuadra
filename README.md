@@ -17,21 +17,42 @@ Cada vez que pagas o cobras, te llega un aviso para clasificar el movimiento en 
 | Interpretar el texto del aviso ("Has pagado 23,40 € en LIDL…") | `src/lib/bank-parser.ts` |
 | Recordatorio diario y aviso el día de cobro | `src/lib/notifications.ts` |
 | Plan de marketing | `docs/marketing.md` |
+| Icono (se regenera con `node scripts/generate-icons.js <carpeta>`) | `assets/images/`, `scripts/generate-icons.js` |
 
 Los datos se guardan solo en el móvil (AsyncStorage). No hay servidor.
 
 ## Probarla
 
+### En iPhone (lo más rápido)
+
+1. Instala **Expo Go** desde la App Store en tu iPhone.
+2. En el ordenador, dentro de la carpeta del proyecto:
+
 ```bash
 npm install
+```
+
+```bash
 npx expo start
 ```
 
-- Con **Expo Go** puedes ver las pantallas, pero no la detección de pagos de Android ni las compras.
-- Para probarlo todo necesitas una **build de desarrollo**, porque la app lleva código nativo propio:
+3. Escanea el código QR con la cámara del iPhone (el ordenador y el iPhone en la misma wifi).
+
+En Expo Go se ven todas las pantallas, los recordatorios y los Atajos de Apple Pay. No funcionan las compras
+de Premium; para probar Premium usa «Mi plan» → «Desarrollo» → «Simular Premium».
+
+Para instalar la app de verdad en tu iPhone (con su icono y compras) necesitas la cuenta de
+desarrollador de Apple (99 €/año) y una build de EAS:
 
 ```bash
-npx eas-cli@latest login
+npx eas-cli@latest build --profile development --platform ios
+```
+
+### En Android
+
+La detección automática de pagos solo existe en Android y necesita una build de desarrollo:
+
+```bash
 npx eas-cli@latest build --profile development --platform android
 ```
 
@@ -55,5 +76,4 @@ En «Mi plan» → «Desarrollo» hay botones para simular Premium y un aviso de
    con 7 días de prueba, y `vida` (29,99 €, pago único).
 4. En RevenueCat, crea el entitlement `premium`, añade los productos a la offering actual y copia las claves públicas en `.env` (ver `.env.example`).
 5. Google Play pide justificar el permiso de acceso a notificaciones: explica en la ficha y en la política de privacidad que solo se leen los avisos de bancos para detectar pagos y que nada sale del móvil.
-6. Sustituye los iconos y la pantalla de inicio de `assets/images` por los de Cuadra.
-7. Build y envío: `npx eas-cli@latest build --profile production` y `npx eas-cli@latest submit`.
+6. Build y envío: `npx eas-cli@latest build --profile production` y `npx eas-cli@latest submit`.
