@@ -1,56 +1,59 @@
-# Welcome to your Expo app 👋
+# Cuadra
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+App de ahorro y control de gastos para Android e iPhone, hecha con Expo (React Native).
+Cada vez que pagas o cobras, te llega un aviso para clasificar el movimiento en un toque.
 
-## Get started
+## Qué hay hecho
 
-1. Install dependencies
+| Parte | Dónde |
+|---|---|
+| Configuración inicial adaptada (perfil, sueldo, día de cobro, % de ahorro, categorías) | `src/app/onboarding.tsx` |
+| Inicio: lo que te queda, anillo de ahorro, gráfico de gastos, límites, consejos | `src/app/(tabs)/index.tsx` |
+| Añadir / clasificar movimiento (también desde avisos y Atajos de iPhone) | `src/app/clasificar.tsx` |
+| Movimientos por mes (meses anteriores = Premium) | `src/app/(tabs)/movimientos.tsx` |
+| Mi plan: límites, categorías, avisos, detección automática | `src/app/(tabs)/ajustes.tsx` |
+| Pantalla Premium y compras (RevenueCat) | `src/app/premium.tsx`, `src/lib/purchases.ts` |
+| Lectura de avisos del banco en Android (módulo nativo Kotlin) | `modules/bank-listener/` |
+| Interpretar el texto del aviso ("Has pagado 23,40 € en LIDL…") | `src/lib/bank-parser.ts` |
+| Recordatorio diario y aviso el día de cobro | `src/lib/notifications.ts` |
+| Plan de marketing | `docs/marketing.md` |
 
-   ```bash
-   npm install
-   ```
+Los datos se guardan solo en el móvil (AsyncStorage). No hay servidor.
 
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Probarla
 
 ```bash
-npm run reset-project
+npm install
+npx expo start
 ```
 
-This command will move the starter code to the **example** directory and create a blank **src/app** directory where you can start developing.
+- Con **Expo Go** puedes ver las pantallas, pero no la detección de pagos de Android ni las compras.
+- Para probarlo todo necesitas una **build de desarrollo**, porque la app lleva código nativo propio:
 
-### Other setup steps
+```bash
+npx eas-cli@latest login
+npx eas-cli@latest build --profile development --platform android
+```
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+En «Mi plan» → «Desarrollo» hay botones para simular Premium y un aviso del banco (solo en modo desarrollo).
 
-## Learn more
+## Cómo funciona la detección de pagos
 
-To learn more about developing your project with Expo, look at the following resources:
+- **Android:** `BankNotificationService` recibe las notificaciones de las apps de banco de la lista
+  (`modules/bank-listener/.../CapturedStore.kt`). Si el texto tiene un importe y una palabra como
+  «pago», «compra» o «recibido», lo guarda y muestra «Has pagado 23,40 € · Toca para clasificarlo».
+  El usuario tiene que dar permiso de acceso a notificaciones en Ajustes de Android.
+- **iPhone:** iOS no deja leer las notificaciones de otras apps. El usuario crea una automatización en
+  Atajos (disparador «Transacción» de Apple Pay) que abre
+  `cuadra://clasificar?importe=[Importe]&comercio=[Comercio]`. Los pasos aparecen en «Mi plan».
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Antes de publicar
 
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+1. Cambia `com.cuadra.app` en `app.json` por un identificador tuyo (no se puede cambiar después).
+2. Revisa en Google Play los identificadores de las apps de banco de `CapturedStore.kt` y prueba con avisos reales de cada banco.
+3. Crea los productos en App Store Connect y Google Play Console: `mensual` (1,99 €), `anual` (14,99 €)
+   con 7 días de prueba, y `vida` (29,99 €, pago único).
+4. En RevenueCat, crea el entitlement `premium`, añade los productos a la offering actual y copia las claves públicas en `.env` (ver `.env.example`).
+5. Google Play pide justificar el permiso de acceso a notificaciones: explica en la ficha y en la política de privacidad que solo se leen los avisos de bancos para detectar pagos y que nada sale del móvil.
+6. Sustituye los iconos y la pantalla de inicio de `assets/images` por los de Cuadra.
+7. Build y envío: `npx eas-cli@latest build --profile production` y `npx eas-cli@latest submit`.
